@@ -1,0 +1,93 @@
+CoLoRe:
+  OMP_THREADS: 64
+
+  extra args:
+    CoLoRe:
+      global:
+        output_format: "FITS"
+        output_density: true
+        pk_filename: /global/cfs/cdirs/desicollab/users/cramirez/LyaCoLoRe_mocks_inputs/CoLoRe/PlanckDR12_kmax_matterpower_z0.dat
+        z_min: 1.6
+        z_max: 3.79
+        seed: 0
+        write_pred: false
+        pred_dz: 0.1
+      
+      field_par:
+        r_smooth: 2.0
+        smooth_potential: true
+        n_grid: 4096
+        dens_type: 2
+        lpt_buffer_fraction: 0.6
+        lpt_interp_type: 1
+        output_lpt: 0
+      
+      cosmo_par:
+        omega_M: 0.3147
+        omega_L: 0.6853
+        omega_B: 0.04904
+        h: 0.6731
+        w: -1.0
+        ns: 0.9655
+        sigma_8: 0.830
+
+      srcs1:
+        nz_filename: /global/cfs/cdirs/desicollab/users/cramirez/LyaCoLoRe_mocks_inputs/CoLoRe/Nz_qso_130618_2_colore1_hZs.txt
+        bias_filename: /global/cfs/cdirs/desicollab/users/cramirez/LyaCoLoRe_mocks_inputs/CoLoRe/Bz_qso_G18.txt
+        include_shear: false
+        include_lensing: false
+        store_skewers: true
+        gaussian_skewers: false
+
+  slurm args:
+    CoLoRe:
+      time: 00:30:00
+      ntasks: 46
+      nodes: 46
+      cpus-per-task: 46
+
+LyaCoLoRe:
+  extra args:
+    LyaCoLoRe:
+      ## Input arguments.
+      file-format: colore
+      skewer-type: gaussian
+
+      ## Processing arguments: catalogue.
+      min-cat-z: 1.8
+      footprint: desi_pixel_plus
+
+      ## Processing arguments: skewers.
+      rest-frame-weights-cut: 1200.
+      cell-size: 0.25
+      lambda-min: 3470.
+      tuning-file: /global/cfs/cdirs/desicollab/users/cramirez/LyaCoLoRe_mocks_inputs/LyaCoLoRe/tuning_data_v9.0.fits
+      add-small-scale-fluctuations: True
+      add-QSO-RSDs: True
+      add-RSDs: True
+      include-thermal-effects: False
+      add-Lyb: True
+      add-metals: True
+      metals-selection: standard
+
+      ## Processing arguments: DLAs.
+      add-DLAs: True
+      DLA-bias: 2.0
+      DLA-bias-evol: b_const
+      DLA-bias-method: global
+
+      ## Processing arguments: misc.
+      nproc: 32
+      nside: 16
+
+      ## Output arguments.
+      add-picca-drqs: False
+      picca-all-absorbers: False
+      transmission-only: True
+      transmission-lambda-min: 3470.
+      transmission-lambda-max: 6500.
+      transmission-delta-lambda: 0.2
+      transmission-format: final
+      compress: True
+            
+    

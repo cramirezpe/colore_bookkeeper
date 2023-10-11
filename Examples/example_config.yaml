@@ -1,0 +1,52 @@
+general:
+  #python environment to be used when running jobs
+  #something that would be activated as:
+  # source activate picca
+  conda environment: picca
+
+  # default system to run bookkeeper on
+  # slurm_cori: slurm for cori
+  # slurm_perlmutter: slurm for perlmutter
+  # bash: run on terminal (login nodes at NERSC)
+  system: slurm_perlmutter
+
+  # general slurm args, e.g. mail options
+  slurm args:
+    mail-type: fail
+    mail-user: user@host.com
+
+  # Defaults file to use
+  defaults: lognormal
+
+data:
+  # Parent path of the bookkeeper.
+  bookkeeper dir: /pscratch/sd/c/cramirez/test_colore_bookkeeper
+
+CoLoRe:
+  run name: default
+
+  CoLoRe directory: /global/common/software/desi/users/cramirez/CoLoRe/CoLoRe
+  OMP_THREADS: 64
+
+  # Use this to copy files from another place into output (link)
+  #copy files: /path/to/CoLoRe/output/folder
+
+  extra args:
+    CoLoRe:
+      field_par:
+        n_grid: 512
+
+  slurm args:
+    CoLoRe:
+      time: 00:30:00
+      nodes: 64
+
+LyaCoLoRe:
+  run name: default
+  CoLoRe run name: default
+
+quickquasars:
+  run name: default
+  LyaCoLoRe run name: default
+  CoLoRe run name: default
+
