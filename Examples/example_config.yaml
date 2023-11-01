@@ -50,3 +50,8 @@ quickquasars:
   LyaCoLoRe run name: default
   CoLoRe run name: default
 
+LyaCoLoRe:
+  run name: default
+  CoLoRe run name: default
+
+  

@@ -301,8 +301,6 @@ class Bookkeeper(PiccaBookkeeper):
         self,
         system: Optional[str] = None,
         wait_for: Optional[Tasker | ChainedTasker | int | List[int]] = None,
-        slurm_header_extra_args: Dict = dict(),
-        extra_args: Dict = dict(),
         overwrite: bool = False,
         skip_sent: bool = True,
     ) -> Tasker:
@@ -319,9 +317,6 @@ class Bookkeeper(PiccaBookkeeper):
             slurm_header_extra_args: Change slurm header default options if
                 needed (time, qos, etc...). Use a dictionary with the format
                 {'option_name': 'option_value'}.
-            extra_args: Set extra options for picca delta extraction.
-                The format should be a dict of dicts: wanting to change
-                "num masks" in "masks" section one should pass
             overwrite: Overwrite files in destination.
             skip_sent: Skip this and return a DummyTasker if the run
                 was already sent before.
@@ -396,6 +391,44 @@ class Bookkeeper(PiccaBookkeeper):
             out_file=self.paths.colore_jobid_file(),
             force_OMP_threads=self.config["CoLoRe"].get("OMP_THREADS", 1),
         )
+
+    def get_lyacolore_tasker(
+        self,
+        system: Optional[str] = None,
+        wait_for: Optional[Tasker | ChainedTasker | int | List[int]] = None,
+        overwrite: bool = False,
+        skip_sent: bool = True,
+    ) -> Tasker:
+        """Method to get a Tasker object to run LyaCoLoRe.
+
+        Args:
+            system: Shell to use for job. 'slurm_cori' to use slurm scripts on
+                cori, 'slurm_perlmutter' to use slurm scripts on perlmutter,
+                'bash' to run it in login nodes or computer shell.
+                Default: None, read from config file.
+            wait_for: In NERSC, wait for a given job to finish before running
+                the current one. Could be a  Tasker object or a slurm jobid
+                (int). (Default: None, won't wait for anything).
+            slurm_header_extra_args: Change slurm header default options if
+                needed (time, qos, etc...). Use a dictionary with the format
+                {'option_name': 'option_value'}.
+            overwrite: Overwrite files in destination.
+            skip_sent: Skip this and return a DummyTasker if the run
+                was already sent before.
+        """
+        if self.defaults_diff != {}:
+            raise ValueError(
+                "Default values changed since last run of the "
+                f"bookkeeper. Remove the file:\n\n {self.paths.defaults_file} "
+                "\n\n to be able to write jobs (with the new default "
+                f"values\). Defaults diff:\n\n"
+                f"{DictUtils.print_dict(self.defaults_diff)}"
+            )
+        
+        job_name = "LyaCoLoRe"
+
+        updated_system = self.generate_system_arg(system)
+
 
 
 class PathBuilder(PiccaPathBuilder):
