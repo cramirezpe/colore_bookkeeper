@@ -23,6 +23,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "colore_bookkeeper_run_colore = colore_bookkeeper.scripts.run_CoLoRe:main",
+            "colore_bookkeeper_run_corrf = colore_bookkeeper.scripts.run_Corrf:main",
         ]
     },
     classifiers=[
@@ -30,5 +31,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.11",
+    python_requires=">=3.10.12",
 )

@@ -15,9 +15,6 @@ general:
     mail-type: fail
     mail-user: user@host.com
 
-  # Defaults file to use
-  defaults: lognormal
-
 data:
   # Parent path of the bookkeeper.
   bookkeeper dir: /pscratch/sd/c/cramirez/test_colore_bookkeeper
@@ -41,11 +38,23 @@ CoLoRe:
       time: 00:30:00
       nodes: 64
 
+Corrfunc:
+  run name: default
+  CoLoRe run name: default
+
+  source: 1
+
+  copy results:
+    DD: 
+    DR:
+    RD:
+    RR: 
+
 LyaCoLoRe:
   run name: default
   CoLoRe run name: default
 
-quickquasars:
+QuickQuasars:
   run name: default
   LyaCoLoRe run name: default
   CoLoRe run name: default

@@ -1,4 +1,4 @@
-"""Script to run CoLoRe given a bookkeeper config file."""
+"""Script to run Corrf and CoLoRe"""
 from __future__ import annotations
 
 import argparse
@@ -7,13 +7,14 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 from colore_bookkeeper.bookkeeper import Bookkeeper
-from picca_bookkeeper.tasker import Tasker
+from colore_bookkeeper.scripts.run_CoLoRe import main as run_CoLoRe
 
 if TYPE_CHECKING:
-    from typing import Callable, Optional, Type
+    from typing import Optional
 logger = logging.getLogger(__name__)
-
 
 def main(args: Optional[argparse.Namespace] = None) -> None:
     if args is None:
@@ -26,23 +27,35 @@ def main(args: Optional[argparse.Namespace] = None) -> None:
         format="%(levelname)s:%(message)s",
     )
 
+    colore_args = argparse.Namespace(
+        bookkeeper_config=args.bookkeeper_config,
+        overwrite=args.overwrite,
+        skip_sent=args.skip_sent,
+        only_write=args.only_write,
+        wait_for=args.wait_for,
+        log_level=args.log_level,
+        overwrite_config=args.overwrite_config,
+    )
+
+    run_CoLoRe(colore_args)
+
     bookkeeper = Bookkeeper(
         args.bookkeeper_config,
         overwrite_config=args.overwrite_config,
         read_mode=False,
     )
-
-    logger.info("Adding CoLoRe realisation.")
-    colore = bookkeeper.get_colore_tasker(
+    
+    logger.info("Adding Corrf.")
+    corrf = bookkeeper.get_corrf_tasker(
         wait_for=args.wait_for,
         overwrite=args.overwrite,
         skip_sent=args.skip_sent,
     )
 
-    colore.write_job()
+    corrf.write_job()
     if not args.only_write:
-        colore.send_job()
-        logger.info(f"Sent CoLoRe run:\n\t{colore.jobid}")
+        corrf.send_job()
+        logger.info(f"Sent Corrf run:\n\t{corrf.jobid}")
 
 
 def get_args() -> argparse.Namespace:
@@ -65,13 +78,13 @@ def get_args() -> argparse.Namespace:
         "--skip-sent", action="store_true", help="Skip runs that were already sent."
     )
 
+    parser.add_argument("--wait-for", nargs="+", type=int, default=None, required=False)
+
     parser.add_argument(
         "--only-write",
         action="store_true",
         help="Only write scripts, do not send them.",
     )
-
-    parser.add_argument("--wait-for", nargs="+", type=int, default=None, required=False)
 
     parser.add_argument(
         "--log-level",
@@ -82,7 +95,6 @@ def get_args() -> argparse.Namespace:
     args = parser.parse_args()
 
     return args
-
 
 if __name__ == "__main__":
     main()
